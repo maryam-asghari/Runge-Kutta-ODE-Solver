@@ -1,6 +1,6 @@
 """
 Fourth-order Runge-Kutta (RK4) solver for
-first-order ordinary differential equations.
+ordinary differential equations (ODEs).
 
 This module implements the classical
 fourth-order Runge-Kutta method for solving
@@ -8,17 +8,23 @@ initial-value problems of the form
 
     y' = f(t, y)
 
-with a given initial condition
+where y may be either a scalar variable
+or a vector of variables.
 
-    y(t0) = y0.
+The solver supports both single ordinary
+differential equations and systems of
+first-order ordinary differential equations.
 
-The solver computes the numerical solution
-on a uniform time grid and returns the
-discrete time values together with the
-corresponding numerical solution.
+Given an initial condition
+
+    y(t0) = y0
+
+the numerical solution is computed on a
+uniform time grid and returned together
+with the corresponding time values.
 
 Author: Maryam Asghari
-Version: 1.0
+Version: 2.0
 Date: June 2026
 """
 
@@ -39,15 +45,15 @@ def rk4_step(f, t, y, h):
         Right-hand side of the ODE y' = f(t,y).
     t : float
         Current time.
-    y : float
+    y : float or ndarray
         Current solution value.
     h : float
         Time-step size.
 
     Returns
     -------
-    float
-        Solution after one RK4 step.
+    float or ndarray
+        Solution after one RK4 step. 
     """    
 
     k1 = f(t, y)
@@ -75,17 +81,19 @@ def rk4_solver(f, t0, y0, t_end, h):
 
 
     """
-    Solve a first-order ordinary differential
-    equation using the classical RK4 methodon a uniform time grid. .
+    Solve a first-order ordinary differential equation
+    or a system of first-order ordinary differential
+    equations using the classical RK4 method.
 
+    
     Parameters
     ----------
     f : callable
         Right-hand side of the ODE y' = f(t, y).
     t0 : float
         Initial time.
-    y0 : float
-        Initial value y(t0).
+    y0 : float or array_like
+        Initial condition.
     t_end : float
         Final time.
     h : float
@@ -97,13 +105,19 @@ def rk4_solver(f, t0, y0, t_end, h):
         Discrete time grid.
     y_values : ndarray
         Numerical solution at each time point.
+        For systems of equations, each row
+        corresponds to one time step and each
+        column corresponds to one state variable.
     """ 
+    y0 = np.atleast_1d(y0)
+
+    m = y0.size 
 
 
     N = int((t_end - t0) / h)
 
     t_values = np.zeros(N + 1)
-    y_values = np.zeros(N + 1)
+    y_values = np.zeros((N + 1, m))
 
     t_values[0] = t0
     y_values[0] = y0
@@ -111,6 +125,7 @@ def rk4_solver(f, t0, y0, t_end, h):
     t = t0
     y = y0
 
+ 
     for i in range(N):
          y = rk4_step(f, t, y, h)
          t = t + h
