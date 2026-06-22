@@ -1,27 +1,27 @@
 ﻿# Runge-Kutta ODE Solver
 
-A Python implementation of the classical fourth-order Runge-Kutta (RK4) method for solving first-order ordinary differential equations (ODEs).
+A Python implementation of the classical fourth-order Runge-Kutta (RK4) method for solving ordinary differential equations (ODEs).
 
 ## Overview
 
 This project implements the classical RK4 algorithm for initial-value problems of the form
 
-[
+```
 y' = f(t, y)
-]
+```
 
-with an initial condition
+where y may be either a scalar variable or a vector of variables.
 
-[
-y(t_0) = y_0.
-]
+The solver supports:
 
-The solver computes the numerical solution on a uniform time grid and provides tools for:
-
-* Numerical integration of ODEs
-* Comparison with exact solutions
+* Single first-order ordinary differential equations
+* Systems of first-order ordinary differential equations
 * Error analysis
 * Convergence studies
+* Visualization of numerical solutions
+
+
+This project was developed as a learning and portfolio project for numerical methods and scientific computing in Python.
 
 ---
 
@@ -31,124 +31,134 @@ The solver computes the numerical solution on a uniform time grid and provides t
 Runge-Kutta-ODE-Solver/
 │
 ├── rk4_solver.py
-├── examples.py
 │
-├── figures/
-│   ├── convergence.png
-│   ├── solution.png
-│   └── error.png
+├── examples/
+│   ├── exponential_growth.py
+│   └── pendulum_example.py
 │
-└── data/
+├── figures/     
+│
+├── README.md
+└── .gitignore
+```
+---
+
+## Running the Examples
+
+Run the exponential growth example:
+
+```bash
+python examples/exponential_growth.py
+```
+
+Run the nonlinear pendulum example:
+
+```bash
+python examples/pendulum_example.py
 ```
 
 ---
 
 ## Numerical Method
 
-The classical fourth-order Runge-Kutta method advances the solution according to
+The classical fourth-order Runge-Kutta method advances the solution using four intermediate slope evaluations:
 
-[
-k_1 = f(t_n, y_n)
-]
+```
+k1 = f(tn, yn)
 
-[
-k_2 = f\left(t_n+\frac{h}{2},
-y_n+\frac{h}{2}k_1\right)
-]
+k2 = f(tn + h/2, yn + h*k1/2)
 
-[
-k_3 = f\left(t_n+\frac{h}{2},
-y_n+\frac{h}{2}k_2\right)
-]
+k3 = f(tn + h/2, yn + h*k2/2)
 
-[
-k_4 = f(t_n+h,
-y_n+h k_3)
-]
+k4 = f(tn + h, yn + h*k3)
+```
 
 and
 
-[
-y_{n+1}
-=======
+```
+yn+1 = yn + h*(k1 + 2*k2 + 2*k3 + k4)/6
+```
 
-y_n
-+
-\frac{h}{6}
-(k_1 + 2k_2 + 2k_3 + k_4).
-]
+The RK4 method has global accuracy of order
 
-The RK4 method has a global error of order
-
-[
-O(h^4).
-]
+```
+O(h^4)
+```
 
 ---
 
-## Example Problem
+## Included Examples
 
-The included example solves
+### 1. Exponential Growth
 
-[
-y' = y,
-]
+Solves
+
+```
+y' = y
+```
 
 with
 
-[
-y(0)=1.
-]
+```
+y(0) = 1
+```
 
-The exact solution is
+The numerical solution is compared with the exact solution
 
-[
-y(t)=e^t.
-]
+```
+y(t) = e^t
+```
 
-The numerical solution is compared against the analytical result.
+This example includes:
+
+* Solution plot
+* Error plot
+* Convergence study
 
 ---
 
-## Convergence Study
+### 2. Nonlinear Pendulum
 
-A convergence test is performed using several step sizes:
+Solves the dimensionless nonlinear pendulum equation
 
-```text
-0.4
-0.2
-0.1
-0.05
-0.025
-0.0125
-0.00625
+```
+θ'' + sin(θ) = 0
 ```
 
-The measured convergence slope is approximately
+which is rewritten as the first-order system
 
-```text
-3.93
+```
+θ' = ω
+
+ω' = -sin(θ)
 ```
 
-which is consistent with the theoretical fourth-order accuracy of RK4.
+This example demonstrates:
+
+* Solving systems of ODEs
+* Time evolution of the pendulum angle and angular velocity
+* Phase-space visualization
 
 ---
 
-## Results
+## Generated Figures
 
-The project automatically generates:
+The example scripts automatically generate figures such as:
 
-* Numerical solution plot
-* Pointwise error plot
-* Convergence plot
+* Exponential growth solution
+* Exponential growth error
+* RK4 convergence study
+* Pendulum angle
+* Pendulum angular velocity
+* Pendulum phase space
 
-These figures are stored in the `figures` directory.
+All figures are stored in the `figures` directory.
 
 ---
 
 ## Requirements
 
-* Python 3.x
+* Python 3.10+
 * NumPy
 * Matplotlib
 

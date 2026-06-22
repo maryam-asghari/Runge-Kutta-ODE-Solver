@@ -1,7 +1,7 @@
 """
-Example scripts for the RK4 solver.
+Exponential growth example for the RK4 solver.
 
-This file demonstrates:
+This script demonstrates:
 
 1. Numerical solution of y' = y
 2. Comparison with the exact solution
@@ -12,30 +12,44 @@ Author: Maryam Asghari
 Version: 1.0
 Date: June 2026
 """
-import os
+import sys
+from pathlib import Path
+
+sys.path.append(
+    str(Path(__file__).resolve().parent.parent)
+    )
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 
 from rk4_solver import rk4_solver
 
-os.makedirs("figures", exist_ok=True)
-os.makedirs("data", exist_ok=True)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+FIGURES_DIR = PROJECT_ROOT / "figures"
+
+FIGURES_DIR.mkdir(exist_ok=True)
+
 
 
 def f(t, y):
 
-    """
-    Test problem:
+   """
+   Test problem:
 
-        y' = y
+       y' = y
 
-    Exact solution:
+   Exact solution:
 
-        y(t) = exp(t)
-    """
+       y(t) = exp(t)
+ 
+   Note
+   ----
+   The variable t is included only to match
+   the solver interface.
+   """ 
     
-    
-    return y
+   return y
 
 # ----------------------------------
 # Convergence Study
@@ -53,6 +67,8 @@ h_values = [
 
 errors = []
 
+
+
 for h in h_values:
     
     t, y_num = rk4_solver(
@@ -62,6 +78,7 @@ for h in h_values:
         t_end=2.0,
         h=h
     )
+    y_num = np.squeeze(y_num)
     y_exact = np.exp(t)
 
     error = np.max(
@@ -108,12 +125,12 @@ plt.legend()
 plt.xlabel('log(h)')
 plt.ylabel('log(Error)')
 
-plt.title("RK4 Convergence ")
+plt.title("RK4 Convergence")
 plt.grid(True)
 
 
 plt.savefig(
-    "figures/convergence.png",
+    str(FIGURES_DIR / "exponential_growth_convergence.png"),
     dpi=300,
     bbox_inches="tight"
 )
@@ -133,6 +150,8 @@ t, y_num = rk4_solver(
 
 
 y_exact = np.exp(t)
+y_num = np.squeeze(y_num)
+
 
 plt.figure()
 
@@ -160,7 +179,7 @@ plt.grid(True)
 
 
 plt.savefig(
-    "figures/solution.png",
+    str(FIGURES_DIR / "exponential_growth_solution.png"),
     dpi=300,
     bbox_inches="tight"
 )
@@ -187,17 +206,10 @@ plt.title("RK4 Error")
 plt.grid(True)
 
 plt.savefig(
-    "figures/error.png",
+    str(FIGURES_DIR / "exponential_growth_error.png"),
     dpi=300,
     bbox_inches="tight"
 )
-
-
-
-    
-
-
-
 
 
 plt.show()
